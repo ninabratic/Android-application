@@ -35,18 +35,37 @@ public class TestController {
 	@RequestMapping(value = "/image", method = RequestMethod.GET, produces = "image/jpg")
 	public ResponseEntity<String> getImage() {
 
-		String slika = Helper.fromFileToBase64("src/main/resources/static/test.jpg");
-//		String slika1 = Helper.fromFileToBase64("src/main/resources/static/test.jpg");
+		String slika = Helper.fromFileToBase64("src/main/resources/static/kum.jpg");
+		String slika1 = Helper.fromFileToBase64("src/main/resources/static/home.jpg");
+		String slika2 = Helper.fromFileToBase64("src/main/resources/static/DjangoMovie.jpg");
+		String slika3 = Helper.fromFileToBase64("src/main/resources/static/goonies.jpg");
+		String slika4 = Helper.fromFileToBase64("src/main/resources/static/starWars.jpg");
 		Map<String, String> map = new HashMap<>();
 		int i = 0;
-		for (i = 0; i < 4; i++) {
 
-			map.put("tekst" + i, "Film " + i);
-			System.out.println("tekst" + i);
-			map.put("slika" + i, slika);
-			map.put("cena" + i, (i + 1) * 100 + "");
-		}
-		map.put("ukupno", "" + i);
+		map.put("tekst" + 1, "Goodfather");
+		map.put("slika" + 1, slika);
+		map.put("cena:" +1, "200");
+
+		map.put("tekst" + 0, "Home alone ");
+		map.put("slika" + 0, slika1);
+		map.put("cena" + 0, "200");
+
+		map.put("tekst" + 2, "Django Movie");
+		map.put("slika" + 2, slika2);
+		map.put("cena" + 2, (2 + 1) * 100 + "");
+
+		map.put("tekst" + 3, "Goonies");
+		System.out.println("tekst" + 1);
+		map.put("slika" + 3, slika3);
+		map.put("cena" + 3, (3 + 1) * 100 + "");
+
+		map.put("tekst" + 4, "Star wars");
+		System.out.println("tekst" + 1);
+		map.put("slika" + 4, slika4);
+		map.put("cena" + 4, (4 + 1) * 100 + "");
+
+		map.put("ukupno", "" + 5);
 
 		String jsonResult = null;
 
@@ -103,7 +122,7 @@ public class TestController {
 	}
 
 	@Async
-	void sendEmail(String email, double ukupno, ArrayList<String> movies ) {
+	void sendEmail(String email, double ukupno, ArrayList<String> movies) {
 
 		SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setTo(email);
@@ -112,8 +131,8 @@ public class TestController {
 		for (int i = 0; i < movies.size(); i++) {
 			message += "Uspesno ste kupili film: " + movies.get(i) + "\n";
 		}
-		
-		message +="Ukupna cena je: " + ukupno;
+
+		message += "Ukupna cena je: " + ukupno;
 		msg.setText(message);
 
 		javaMailSender.send(msg);

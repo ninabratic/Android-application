@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Base64;
@@ -118,15 +119,18 @@ public class MainActivity extends AppCompatActivity {
                             }
                             byte[] decodedString = Base64.decode(slika, Base64.DEFAULT);
                             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            Bitmap bMapScaled = Bitmap.createScaledBitmap(decodedByte, 250, 250, true);
                             TableRow tr = new TableRow(MainActivity.this);
 
                             TextView text = new TextView(MainActivity.this);
+                            text.setTextColor(Color.RED);
+                            text.setTextSize(18);
                             text.setText(tekst);
                             tr.addView(text);
 //                            kontejner.addView(text);
 
                             ImageView img = new ImageView(MainActivity.this);
-                            img.setImageBitmap(decodedByte);
+                            img.setImageBitmap(bMapScaled);
                             tr.addView(img);
 
                             Button btn = new Button(MainActivity.this);

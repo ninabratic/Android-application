@@ -51,7 +51,6 @@
                 android:layout_width="122dp"
                 android:layout_height="wrap_content"
                 android:text="Cena" />
-
         </TableRow>
 
 

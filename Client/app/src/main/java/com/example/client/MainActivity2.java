@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -90,7 +91,11 @@ public class MainActivity2 extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setText("Izbaci iz korpe");
             btn.setId(i);
+            naziv.setTextSize(14);
+            naziv.setTextColor(Color.RED);
 
+            cena.setTextSize(14);
+            cena.setTextColor(Color.BLUE);
 
             int finalI = i;
             btn.setOnClickListener (new View.OnClickListener () {
