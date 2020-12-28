@@ -27,13 +27,13 @@ import helper.Helper;
 import model.DTO;
 
 @RestController
-public class TestController {
+public class Controller {
 
 	@Autowired
 	private JavaMailSender javaMailSender;
 
 	@RequestMapping(value = "/image", method = RequestMethod.GET, produces = "image/jpg")
-	public ResponseEntity<String> getImage() {
+	public ResponseEntity<String> getFilm() {
 
 		String slika = Helper.fromFileToBase64("src/main/resources/static/kum.jpg");
 		String slika1 = Helper.fromFileToBase64("src/main/resources/static/home.jpg");

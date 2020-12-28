@@ -91,11 +91,11 @@ public class MainActivity2 extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setText("Izbaci iz korpe");
             btn.setId(i);
-            naziv.setTextSize(14);
-            naziv.setTextColor(Color.RED);
+//            naziv.setTextSize(12);
+//            naziv.setTextColor(Color.RED);
 
-            cena.setTextSize(14);
-            cena.setTextColor(Color.BLUE);
+//            cena.setTextSize(12);
+//            cena.setTextColor(Color.BLUE);
 
             int finalI = i;
             btn.setOnClickListener (new View.OnClickListener () {
@@ -111,7 +111,7 @@ public class MainActivity2 extends AppCompatActivity {
             cena.setText(String.format("%.2f",kupovina.getFilmovi().get(i).getCena()));
 
             tr.setGravity(Gravity.CENTER_HORIZONTAL);
-            naziv.setWidth(100);
+//            naziv.setWidth(150);
             tr.addView(naziv);
             tr.addView(cena);
             tr.addView(btn);
