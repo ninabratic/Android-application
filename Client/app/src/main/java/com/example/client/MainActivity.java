@@ -1,8 +1,10 @@
 package com.example.client;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -25,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,30 +44,35 @@ import Model.Kupovina;
 public class MainActivity extends AppCompatActivity {
 
     private TableLayout kontejner;
+    private ScrollView layout;
     private TextView mTextView;
     private Kupovina kupovina;
     private TextView mUkupno;
-    private User user;
+
     private List<String> neaktivnaDugmad;
     private List<Button> buttons = new ArrayList<>();
     private List<Integer> ids = new ArrayList<Integer>();
     private List<Integer> kliknuta;
-
+    private String http = "http://";
+    private String adress = "10.0.2.2"; //:8081/image
+    private final String[] port = new String[1];
+    private String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        port[0] = "8081/image";
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         View containter = findViewById( R.id.kontejner );
+        layout = findViewById(R.id.scrollView);
         /*DINAMICKO DODAVANJE ELEMENATA*/
         kontejner = findViewById(R.id.kontejner);
         mUkupno = findViewById(R.id.ukupno);
 
-        user = new User();
-        user.setUsername("Nicka");
-        user.setPassword("12345");
 
-
+        url = http+ adress +":"+port[0];
         getData();
         Intent intent = getIntent();
         kupovina = intent.getParcelableExtra("kupovina");
@@ -84,11 +93,16 @@ public class MainActivity extends AppCompatActivity {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         //  String url ="https://www.google.com";
-        String url = "http://10.0.2.2:8081/image";
+
+
+        Log.e("url", port[0] );
+
+
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
+                    @SuppressLint("ResourceType")
                     @Override
                     public void onResponse(String response) {
                         JSONObject jsonResponse = null;
@@ -107,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        TableRow del1 = findViewById( -10 );
+                        kontejner.removeView(del1);
+                        TableRow del2 = findViewById( -20 );
+                        kontejner.removeView(del2);
 
                         for (int i = 0; i < Integer.parseInt(ukupno); i++){
                             try {
@@ -119,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                             byte[] decodedString = Base64.decode(slika, Base64.DEFAULT);
                             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                            Bitmap bMapScaled = Bitmap.createScaledBitmap(decodedByte, 250, 250, true);
                             TableRow tr = new TableRow(MainActivity.this);
+                            tr.setId(i);
 
                             TextView text = new TextView(MainActivity.this);
                             text.setTextColor(Color.RED);
@@ -128,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
                             text.setText(tekst);
                             tr.addView(text);
 //                            kontejner.addView(text);
+
+
+                            Bitmap bMapScaled = Bitmap.createScaledBitmap(decodedByte, 250, 250, true);
 
                             ImageView img = new ImageView(MainActivity.this);
                             img.setImageBitmap(bMapScaled);
@@ -174,11 +195,79 @@ public class MainActivity extends AppCompatActivity {
                             tr.addView(ll);
                             kontejner.addView(tr);
                         }
+                        TableRow tr1 = new TableRow(MainActivity.this);
+                        TableRow tr2 = new TableRow(MainActivity.this);
+                        TextInputEditText serverIP = new TextInputEditText(MainActivity.this);
+                        Button saveIp = new Button(MainActivity.this);
+                        TextInputEditText serverPort = new TextInputEditText(MainActivity.this);
+                        Button savePort = new Button(MainActivity.this);
+
+                        String finalUkupno = ukupno;
+                        savePort.setOnClickListener (new View.OnClickListener () {
+                            @Override
+                            public void onClick (View v)
+                            {
+                                port[0] = serverPort.getText().toString();
+                                Log.e("UCITANI PORT", port[0].toString() );
+                                url = "";
+                                url = http+ adress +":"+port[0];
+                                Log.e("URLLLLL", url );
+//                                layout.removeView(kontejner);
+//                                kontejner = new TableLayout(MainActivity.this);
+//                                layout.addView(kontejner);
+                                for (int i = 0; i < Integer.parseInt(finalUkupno); i++){
+                                    TableRow tr = findViewById( i );
+                                    kontejner.removeView(tr);
+                                }
+                                getData();
+                            }
+                        });
+
+                        saveIp.setOnClickListener (new View.OnClickListener () {
+                            @Override
+                            public void onClick (View v)
+                            {
+                                adress = serverIP.getText().toString();
+                                Log.e("UCITANI PORT", port[0].toString() );
+                                url = "";
+                                url = http+ adress +":"+port[0];
+                                Log.e("URLLLLL", url );
+                                for (int i = 0; i < Integer.parseInt(finalUkupno); i++){
+                                    TableRow tr = findViewById( i );
+                                    kontejner.removeView(tr);
+                                }
+                                getData();
+                            }
+                        });
+
+                        savePort.setText("Set port");
+                        saveIp.setText("Set IP adress");
+                        serverIP.setWidth(100);
+                        serverIP.setHeight(120);
+                        serverPort.setHeight(120);
+                        serverPort.setWidth(100);
+                        TextView IPLabel = new TextView(MainActivity.this);
+                        IPLabel.setText("Server IP");
+
+                        TextView portLabel = new TextView(MainActivity.this);
+                        portLabel.setText("Server port");
+                        tr1.addView(IPLabel);
+                        tr1.setId(-20);
+                        tr1.addView(serverIP);
+                        tr1.addView(saveIp);
+                        tr2.addView(portLabel);
+                        tr2.setId(-10);
+                        tr2.addView(serverPort);
+                        tr2.addView(savePort);
+                        kontejner.addView(tr1);
+                        kontejner.addView(tr2);
+
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work!"+ error.getMessage());
+                return;
+//                mTextView.setText("That didn't work!"+ error.getMessage());
             }
         });
 
@@ -191,15 +280,9 @@ public class MainActivity extends AppCompatActivity {
     private void noviProzor(){
         Intent intent = new Intent();
         intent.setClass( this,MainActivity2.class);
-        intent.putExtra("user", user);
         intent.putExtra("kupovina", kupovina);
         Log.e("kupovina", kupovina.getFilmovi().size()+"");
         intent.putExtra("kliknuta", (ArrayList<Integer>) kliknuta);
-//        intent.putExtra("kliknuta", (ArrayList<S>) buttons);
-//        Log.e("idemo", neaktivnaDugmad.toString());
-//        Log.e("nesto",neaktivnaDugmad.size()+"");
-//        mUkupno.setText(neaktivnaDugmad.toString());
-//        intent.putExtra()
         startActivity(intent);
     }
 
@@ -209,14 +292,9 @@ public class MainActivity extends AppCompatActivity {
         ukupno += film.getCena();
         kupovina.getFilmovi().add(film);
         kupovina.setUkupno(ukupno);
-        kupovina.setKorisnik(user);
         mUkupno.setText(String.format("%.2f",ukupno));
     }
 
-//    public void getImage(View view, int a) {
-//        mTextViewResult1 = findViewById(R.id.text_view_result1);
-//        mTextViewResult.setText("RADI");
-//    }
 
     public void noviProzor(View view) {
         noviProzor();

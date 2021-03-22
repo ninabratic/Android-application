@@ -8,11 +8,14 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:clickable="true"
-        android:layout_weight="1"
         android:layout_width="fill_parent"
-        android:layout_marginBottom="50px"
         android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="MissingConstraints">
 
         <TableLayout
@@ -52,7 +55,11 @@
             </TableRow>
 
         </TableLayout>
+
+
+
     </ScrollView>
+
 
 
 

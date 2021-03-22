@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -56,7 +55,7 @@ import Model.Kupovina;
 public class MainActivity2 extends AppCompatActivity {
 
     private TextView mtextView;
-    private User user;
+//    private User user;
     private TableLayout kontejner;
     private Kupovina kupovina;
     private List<Film> uklonjeni = new ArrayList<>();
@@ -69,8 +68,6 @@ public class MainActivity2 extends AppCompatActivity {
         kontejner = findViewById(R.id.kontejner);
         mtextView = findViewById(R.id.textView);
         Intent intent = getIntent();
-        User u = intent.getParcelableExtra("user");
-        user = u;
         Kupovina shop = intent.getParcelableExtra("kupovina");
         Log.e("kupovina", shop.getFilmovi().size()+"");
         kupovina = shop;
@@ -91,27 +88,35 @@ public class MainActivity2 extends AppCompatActivity {
             Button btn = new Button(this);
             btn.setText("Izbaci iz korpe");
             btn.setId(i);
-//            naziv.setTextSize(12);
-//            naziv.setTextColor(Color.RED);
 
-//            cena.setTextSize(12);
-//            cena.setTextColor(Color.BLUE);
+
+            naziv.setText(kupovina.getFilmovi().get(i).getNaziv());
+            cena.setText(String.format("%.2f",kupovina.getFilmovi().get(i).getCena()));
 
             int finalI = i;
+            String ime = naziv.getText().toString();
+            Log.e("NAZIV FILMA", ime );
             btn.setOnClickListener (new View.OnClickListener () {
                 @Override
                 public void onClick (View v)
                 {
-                    izbaciIzKorpe(kupovina.getFilmovi().get(finalI), btn, kupi);
+                    int delIndex = -1;
+                    for (int i = 0; i < kupovina.getFilmovi().size(); i++){
+                        if(kupovina.getFilmovi().get(i).getNaziv().equals(ime)){
+                            delIndex = i;
+                        }
+                    }
+                    Log.e("NAZIV FILMA", ime + " OVO" );
+                    Log.e("INDEX", ""+finalI );
+                    Log.e("DELINDEX: ",""+delIndex );
+                    izbaciIzKorpe(kupovina.getFilmovi().get(delIndex), btn, kupi);
                 }
             });
 
-            naziv.setText(kupovina.getFilmovi().get(i).getNaziv());
-//            double price = kupovina.getFilmovi().get(i).getCena());
-            cena.setText(String.format("%.2f",kupovina.getFilmovi().get(i).getCena()));
+
 
             tr.setGravity(Gravity.CENTER_HORIZONTAL);
-//            naziv.setWidth(150);
+            naziv.setWidth(100);
             tr.addView(naziv);
             tr.addView(cena);
             tr.addView(btn);
@@ -137,7 +142,6 @@ public class MainActivity2 extends AppCompatActivity {
             kupi.setEnabled(false);
         }
         kontejner.addView(ll);
-//        kliknuta = new ArrayList<>();
     }
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -162,21 +166,41 @@ public class MainActivity2 extends AppCompatActivity {
 
         volleyPost(email.getText().toString());
     }
+    private void nazad(){
+        Intent intent = new Intent();
+
+        intent.setClass( this,MainActivity.class);
+        intent.setClass( this,MainActivity.class);
+        intent.putExtra("kupovina", kupovina);
+        intent.putExtra("kliknuta", (ArrayList<Integer>)kliknuta);
+        startActivity(intent);
+    }
 
     public void izbaciIzKorpe(Film film, Button btn, Button kupi){
 
-        kupovina.getFilmovi().remove(film);
+//        kupovina.getFilmovi().remove(film);
+        int brisanje = -1;
+        for(int i = 0; i < kupovina.getFilmovi().size(); i++){
+            if(film.getNaziv().equals(kupovina.getFilmovi().get(i).getNaziv())){
+                Log.e("BRISE", "index" + i );
+                brisanje = i;
+                kupovina.getFilmovi().remove(i);
+            }
+        }
         kupovina.setUkupno(kupovina.getUkupno() - film.getCena());
 //        btn.setText("Dodaj u korpu");
         btn.setEnabled(false);
         uklonjeni.add(film);
-        kliknuta.remove(btn.getId());
+        kliknuta.remove(brisanje);
         Log.e("izbaciIzKorpe: ",""+kliknuta.size() );
         if(kupovina.getFilmovi().size() == 0){
             kupi.setEnabled(false);
         }
-        mtextView.setText("Ukupno: " +String.valueOf(kupovina.getUkupno()));
-
+        if(kupovina.getFilmovi().size() == 0){
+            mtextView.setText("Ukupno: " +String.valueOf(0.00));
+        }else {
+            mtextView.setText("Ukupno: " + String.valueOf(kupovina.getUkupno()));
+        }
     }
     @Override
     public void onBackPressed() {
@@ -234,6 +258,11 @@ public class MainActivity2 extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
 
     }
+
+    public void nazad(View view) {
+        nazad();
+    }
+
 
     public static class MyDialogFragment extends DialogFragment {
         @Override
