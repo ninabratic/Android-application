@@ -45,7 +45,7 @@ public class Controller {
 
 		map.put("tekst" + 1, "Goodfather");
 		map.put("slika" + 1, slika);
-		map.put("cena:" +1, "200");
+		map.put("cena:" + 1, "200");
 
 		map.put("tekst" + 0, "Home alone ");
 		map.put("slika" + 0, slika1);
